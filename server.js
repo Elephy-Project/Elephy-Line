@@ -4,11 +4,13 @@
  */
 
 const path = require("path");
+const axios = require("axios");
+const channelToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 
 // Require the fastify framework and instantiate it
 const fastify = require("fastify")({
   // Set this to true for detailed logging:
-  logger: false,
+  logger: true,
 });
 
 // ADD FAVORITES ARRAY VARIABLE FROM TODO HERE
@@ -117,3 +119,112 @@ fastify.listen(
     console.log(`Your app is listening on ${address}`);
   }
 );
+
+// connect to line Elephy
+fastify.post("/elephy-line", function (request, reply) {
+  console.log("request", request.body.events);
+  for (const event of request.body.events) {
+    if (event.type === "message" && event.message.type === "location") {
+      console.log(
+        "location: ",
+        event.message.latitude,
+        "/",
+        event.message.longitude
+      );
+      try {
+        const response = axios
+          .post(`${process.env.BASE_PATH}/record`, {
+            informant: "Line user",
+            location_lat: event.message.latitude,
+            location_long: event.message.longitude,
+          })
+          .then((response) => {
+            return response.status;
+          });
+        console.log("response", response);
+      } catch (error) {
+        console.log(error);
+      }
+
+      try {
+        const lineRes = axios.post(
+          "https://api.line.me/v2/bot/message/reply",
+          {
+            replyToken: event.replyToken,
+            messages: [{ type: "text", text: "Thank you for your report." }],
+          },
+          {
+            headers: {
+              authorization: `Bearer ${channelToken}`,
+            },
+          }
+        );
+        console.log(lineRes);
+      } catch (error) {
+        console.log(error);
+      }
+    } else if (
+      event.type === "message" &&
+      event.message.type === "text" &&
+      event.message.text.toLowerCase() === "history"
+    ) {
+      try {
+        axios.post(
+          "https://api.line.me/v2/bot/message/reply",
+          {
+            replyToken: event.replyToken,
+            messages: [
+              { type: "text", text: "https://elephy.vercel.app/summary" },
+            ],
+          },
+          {
+            headers: {
+              authorization: `Bearer ${channelToken}`,
+            },
+          }
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    } else if (
+      event.type === "message" &&
+      event.message.type === "text" &&
+      event.message.text.toLowerCase() === "today records"
+    ) {
+      try {
+        const recordsResponse = axios
+          .get(`${process.env.BASE_PATH}/elephant-records`)
+          .then((response) => {
+            return response.data;
+          });
+        console.log("recordsResponse", recordsResponse);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        axios.post(
+          "https://api.line.me/v2/bot/message/reply",
+          {
+            replyToken: event.replyToken,
+            messages: [
+              {
+                type: "text",
+                text: `Please share location if you detect the elephants or clict the menu/type "History" to see the history`,
+              },
+            ],
+          },
+          {
+            headers: {
+              authorization: `Bearer ${channelToken}`,
+            },
+          }
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+  return "Success";
+});
+
