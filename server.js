@@ -6,6 +6,7 @@
 const path = require("path");
 const axios = require("axios");
 const channelToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
+const 
 
 // Require the fastify framework and instantiate it
 const fastify = require("fastify")({
@@ -235,7 +236,8 @@ async function defineRecords() {
     .then((response) => {
       return response.data;
     });
-  console.log(records)
+  records.filter(record => 
+                console.log(record.datetime))
   }
   catch (error) {
     console.log(error)
