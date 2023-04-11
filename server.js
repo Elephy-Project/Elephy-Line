@@ -227,11 +227,24 @@ async function defineRecords() {
         return response.data;
       });
     const now = new Date();
-    now.setMinutes(now.getMinutes() - 5);
+    now.setMinutes(now.getMinutes() - 50);
     const listRecord = records.filter(
       (record) => new Date(record.datetime) >= now
     );
-    console.log(listRecord.lenght, listRecord)
+    console.log(listRecord.length, listRecord)
+    const locationList = []
+    
+    listRecord.map( (record) => {
+      const temp = {
+        type: "location",
+                title: "Elephant location",
+                latitude: record.location_lat,
+                longitude: record.location_long,
+      }
+    }
+      
+    )
+    
     if (listRecord.lenght > 0) {
       try {
         axios.post(
@@ -239,6 +252,10 @@ async function defineRecords() {
           {
             // replyToken: event.replyToken,
             messages: [
+              {
+            "type":"text",
+            "text":"Elephant detected"
+        },
               {
                 type: "location",
                 title: "my location",
@@ -250,7 +267,7 @@ async function defineRecords() {
           },
           {
             headers: {
-              authorization: `Bearer ${channelToken}`,
+              Authorization: `Bearer ${channelToken}`,
             },
           }
         );
