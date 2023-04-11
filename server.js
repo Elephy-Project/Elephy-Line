@@ -237,12 +237,13 @@ async function defineRecords() {
       return response.data;
     });
     const now = new Date()
+    console.log('before', now)
     now.setMinutes(now.getMinutes() - 5)
   // const listRecord = records.filter(record => 
   //               Date(record.datetime) > now)
   // console.log('listRecord', listRecord)
-    console.log(nDate("2023-04-11 08:55:18.184684+00:00") > now)
-    console.log(Date("2023-04-11 08:55:18.184684+00:00"), 'now', now)
+    console.log(new Date(Date.parse("2023-04-11 09:25:17.754Z+00:00"))  now)
+    console.log(new Date("2023-04-11 09:28:17.754Z+00:00"), 'now', now)
   }
   catch (error) {
     console.log(error)
