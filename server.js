@@ -123,15 +123,8 @@ fastify.listen(
 
 // connect to line Elephy
 fastify.post("/elephy-line", function (request, reply) {
-  console.log("request", request.body.events);
   for (const event of request.body.events) {
     if (event.type === "message" && event.message.type === "location") {
-      console.log(
-        "location: ",
-        event.message.latitude,
-        "/",
-        event.message.longitude
-      );
       try {
         const response = axios
           .post(`${process.env.BASE_PATH}/record`, {
@@ -142,7 +135,6 @@ fastify.post("/elephy-line", function (request, reply) {
           .then((response) => {
             return response.status;
           });
-        console.log("response", response);
       } catch (error) {
         console.log(error);
       }
@@ -160,7 +152,6 @@ fastify.post("/elephy-line", function (request, reply) {
             },
           }
         );
-        console.log(lineRes);
       } catch (error) {
         console.log(error);
       }
@@ -198,7 +189,6 @@ fastify.post("/elephy-line", function (request, reply) {
           .then((response) => {
             return response.data;
           });
-        console.log("recordsResponse", recordsResponse);
       } catch (error) {
         console.log(error);
       }
@@ -237,15 +227,37 @@ async function defineRecords() {
         return response.data;
       });
     const now = new Date();
-    console.log("before", now);
     now.setMinutes(now.getMinutes() - 5);
     const listRecord = records.filter(
-      (record) => {console.log(new Date(record.datetime)), new Date(record.datetime) >= now }
-      // >= now
+      (record) => new Date(record.datetime) >= now
     );
-    console.log("listRecord", listRecord);
-    console.log('after',now);
-    // console.log(new Date("2023-04-11 09:28:17.754Z+00:00"), "now", now);
+    console.log(listRecord.lenght, listRecord)
+    if (listRecord.lenght > 0) {
+      try {
+        axios.post(
+          "https://api.line.me/v2/bot/message/broadcast",
+          {
+            // replyToken: event.replyToken,
+            messages: [
+              {
+                type: "location",
+                title: "my location",
+                address: "1-6-1 Yotsuya, Shinjuku-ku, Tokyo, 160-0004, Japan",
+                latitude: 35.687574,
+                longitude: 139.72922,
+              },
+            ],
+          },
+          {
+            headers: {
+              authorization: `Bearer ${channelToken}`,
+            },
+          }
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    }
   } catch (error) {
     console.log(error);
   }
