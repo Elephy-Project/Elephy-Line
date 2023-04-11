@@ -228,3 +228,18 @@ fastify.post("/elephy-line", function (request, reply) {
   return "Success";
 });
 
+async function defineRecords() {
+  try {
+    const records = await axios
+    .get(`${process.env.BASE_PATH}/elephant-records`)
+    .then((response) => {
+      return response.data;
+    });
+  console.log(records)
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+setInterval(defineRecords, 10000);
