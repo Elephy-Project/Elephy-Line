@@ -221,97 +221,99 @@ fastify.post("/elephy-line", function (request, reply) {
 
 async function defineRecords() {
   try {
-  const records = await axios
-    .get(`${process.env.BASE_PATH}/elephant-records`)
-    .then((response) => {
-      return response.data;
-    });
-  const now = new Date();
-  now.setMinutes(now.getMinutes() - 100);
-  const listRecord = records.filter(
-    (record) => new Date(record.datetime) >= now
-  );
-  // console.log(listRecord.length, listRecord);
-  let locationList = [
-    {
-      type: "text",
-      text: "Elephant detected",
-    }
-    // {
-    //   type: "location",
-    //   title: "Elephant location",
-    //   address: "Elephant address",
-    //   latitude: 13.912066,
-    //   longitude: 100.673074,
-    // },
-    // {
-    //   type: "location",
-    //   title: "Elephant location",
-    //   address: "Elephant address",
-    //   latitude: 13.912066,
-    //   longitude: 100.673074,
-    // },
-    // {
-    //   type: "location",
-    //   title: "Elephant location",
-    //   address: "Elephant address",
-    //   latitude: 13.912066,
-    //   longitude: 100.673074,
-    // },
-    // {
-    //   type: "location",
-    //   title: "Elephant location",
-    //   address: "Elephant address",
-    //   latitude: 13.912066,
-    //   longitude: 100.673074,
-    // }
-  ];
-
-  listRecord.map((record) => {
-    const temp = {
-      type: "location",
-      title: "Elephant location",
-      address: "Elephant address",
-      latitude: record.location_lat,
-      longitude: record.location_long,
-    };
-    locationList.push(temp);
-  });
-  if (listRecord.lenght > 0) {
-  try {
-    const t = await axios.post(
-      "https://api.line.me/v2/bot/message/broadcast",
-      {
-        // replyToken: event.replyToken,
-        messages: locationList
-        // [
-        //   {
-        //     type: "text",
-        //     text: "Elephant detected",
-        //   },
-        //   {
-        //     type: "location",
-        //     title: "my location",
-        //     // address: "1-6-1 Yotsuya, Shinjuku-ku, Tokyo, 160-0004, Japan",
-        //     latitude: 35.687574,
-        //     longitude: 139.72922,
-        //   },
-        // ],
-      },
-      {
-        headers: {
-          authorization: `Bearer ${channelToken}`,
-        },
-      }
+    const records = await axios
+      .get(`${process.env.BASE_PATH}/elephant-records`)
+      .then((response) => {
+        return response.data;
+      });
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - 50);
+    const listRecord = records.filter(
+      (record) => new Date(record.datetime) >= now
     );
-    console.log('t',t)
-  } catch (error) {
-    console.log(error);
-  }
-  }
+    // console.log(listRecord.length, listRecord);
+    let locationList = [
+      {
+        type: "text",
+        text: "Elephant detected",
+      },
+      // {
+      //   type: "location",
+      //   title: "Elephant location",
+      //   address: "Elephant address",
+      //   latitude: 13.912066,
+      //   longitude: 100.673074,
+      // },
+      // {
+      //   type: "location",
+      //   title: "Elephant location",
+      //   address: "Elephant address",
+      //   latitude: 13.912066,
+      //   longitude: 100.673074,
+      // },
+      // {
+      //   type: "location",
+      //   title: "Elephant location",
+      //   address: "Elephant address",
+      //   latitude: 13.912066,
+      //   longitude: 100.673074,
+      // },
+      // {
+      //   type: "location",
+      //   title: "Elephant location",
+      //   address: "Elephant address",
+      //   latitude: 13.912066,
+      //   longitude: 100.673074,
+      // }
+    ];
+
+    listRecord.map((record) => {
+      if (locationList.length < 5) {
+        const temp = {
+          type: "location",
+          title: "Elephant location",
+          address: "Elephant address",
+          latitude: record.location_lat,
+          longitude: record.location_long,
+        };
+        locationList.push(temp);
+      }
+    });
+    if (listRecord.lenght > 0) {
+      try {
+        const t = await axios.post(
+          "https://api.line.me/v2/bot/message/broadcast",
+          {
+            // replyToken: event.replyToken,
+            messages: locationList,
+            // [
+            //   {
+            //     type: "text",
+            //     text: "Elephant detected",
+            //   },
+            //   {
+            //     type: "location",
+            //     title: "my location",
+            //     // address: "1-6-1 Yotsuya, Shinjuku-ku, Tokyo, 160-0004, Japan",
+            //     latitude: 35.687574,
+            //     longitude: 139.72922,
+            //   },
+            // ],
+          },
+          {
+            headers: {
+              authorization: `Bearer ${channelToken}`,
+            },
+          }
+        );
+        console.log("t", t);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   } catch (error) {
     console.log(error);
   }
 }
 
-// setInterval(defineRecords, 10000);
+// setInterval(defineRecords, 300000);
