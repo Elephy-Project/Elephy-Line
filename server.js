@@ -221,62 +221,62 @@ fastify.post("/elephy-line", function (request, reply) {
 
 async function defineRecords() {
   try {
-  // const records = await axios
-  //   .get(`${process.env.BASE_PATH}/elephant-records`)
-  //   .then((response) => {
-  //     return response.data;
-  //   });
+  const records = await axios
+    .get(`${process.env.BASE_PATH}/elephant-records`)
+    .then((response) => {
+      return response.data;
+    });
   const now = new Date();
   now.setMinutes(now.getMinutes() - 100);
-  // const listRecord = records.filter(
-  //   (record) => new Date(record.datetime) >= now
-  // );
+  const listRecord = records.filter(
+    (record) => new Date(record.datetime) >= now
+  );
   // console.log(listRecord.length, listRecord);
   const locationList = [
     {
       type: "text",
       text: "Elephant detected",
-    }
-    // {
-    //   type: "location",
-    //   title: "Elephant location",
-    //   address: "Elephant address",
-    //   latitude: 13.912066,
-    //   longitude: 100.673074,
-    // },
-    // {
-    //   type: "location",
-    //   title: "Elephant location",
-    //   address: "Elephant address",
-    //   latitude: 13.912066,
-    //   longitude: 100.673074,
-    // },
-    // {
-    //   type: "location",
-    //   title: "Elephant location",
-    //   address: "Elephant address",
-    //   latitude: 13.912066,
-    //   longitude: 100.673074,
-    // },
-    // {
-    //   type: "location",
-    //   title: "Elephant location",
-    //   address: "Elephant address",
-    //   latitude: 13.912066,
-    //   longitude: 100.673074,
-    // }
-  ];
-
-  listRecord.map((record) => {
-    const temp = {
+    },
+    {
       type: "location",
       title: "Elephant location",
       address: "Elephant address",
-      latitude: record.location_lat,
-      longitude: record.location_long,
-    };
-    locationList.push(temp);
-  });
+      latitude: 13.912066,
+      longitude: 100.673074,
+    },
+    {
+      type: "location",
+      title: "Elephant location",
+      address: "Elephant address",
+      latitude: 13.912066,
+      longitude: 100.673074,
+    },
+    {
+      type: "location",
+      title: "Elephant location",
+      address: "Elephant address",
+      latitude: 13.912066,
+      longitude: 100.673074,
+    },
+    {
+      type: "location",
+      title: "Elephant location",
+      address: "Elephant address",
+      latitude: 13.912066,
+      longitude: 100.673074,
+    }
+  ];
+
+  // listRecord.map((record) => {
+  //   const temp = {
+  //     type: "location",
+  //     title: "Elephant location",
+  //     address: "Elephant address",
+  //     latitude: record.location_lat,
+  //     longitude: record.location_long,
+  //   };
+  //   locationList.push(temp);
+  // });
   console.log(locationList);
   // if (listRecord.lenght > 0) {
   try {
@@ -305,7 +305,7 @@ async function defineRecords() {
         },
       }
     );
-    // console.log('t',t)
+    console.log('t',t)
   } catch (error) {
     console.log(error);
   }
@@ -315,4 +315,4 @@ async function defineRecords() {
   }
 }
 
-setInterval(defineRecords, 10000);
+// setInterval(defineRecords, 1000000);
