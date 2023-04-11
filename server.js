@@ -232,53 +232,52 @@ async function defineRecords() {
     (record) => new Date(record.datetime) >= now
   );
   // console.log(listRecord.length, listRecord);
-  const locationList = [
+  let locationList = [
     {
       type: "text",
       text: "Elephant detected",
-    },
-    {
-      type: "location",
-      title: "Elephant location",
-      address: "Elephant address",
-      latitude: 13.912066,
-      longitude: 100.673074,
-    },
-    {
-      type: "location",
-      title: "Elephant location",
-      address: "Elephant address",
-      latitude: 13.912066,
-      longitude: 100.673074,
-    },
-    {
-      type: "location",
-      title: "Elephant location",
-      address: "Elephant address",
-      latitude: 13.912066,
-      longitude: 100.673074,
-    },
-    {
-      type: "location",
-      title: "Elephant location",
-      address: "Elephant address",
-      latitude: 13.912066,
-      longitude: 100.673074,
     }
+    // {
+    //   type: "location",
+    //   title: "Elephant location",
+    //   address: "Elephant address",
+    //   latitude: 13.912066,
+    //   longitude: 100.673074,
+    // },
+    // {
+    //   type: "location",
+    //   title: "Elephant location",
+    //   address: "Elephant address",
+    //   latitude: 13.912066,
+    //   longitude: 100.673074,
+    // },
+    // {
+    //   type: "location",
+    //   title: "Elephant location",
+    //   address: "Elephant address",
+    //   latitude: 13.912066,
+    //   longitude: 100.673074,
+    // },
+    // {
+    //   type: "location",
+    //   title: "Elephant location",
+    //   address: "Elephant address",
+    //   latitude: 13.912066,
+    //   longitude: 100.673074,
+    // }
   ];
 
-  // listRecord.map((record) => {
-  //   const temp = {
-  //     type: "location",
-  //     title: "Elephant location",
-  //     address: "Elephant address",
-  //     latitude: record.location_lat,
-  //     longitude: record.location_long,
-  //   };
-  //   locationList.push(temp);
-  // });
-  console.log(locationList);
-  // if (listRecord.lenght > 0) {
+  listRecord.map((record) => {
+    const temp = {
+      type: "location",
+      title: "Elephant location",
+      address: "Elephant address",
+      latitude: record.location_lat,
+      longitude: record.location_long,
+    };
+    locationList.push(temp);
+  });
+  if (listRecord.lenght > 0) {
   try {
     const t = await axios.post(
       "https://api.line.me/v2/bot/message/broadcast",
@@ -309,10 +308,10 @@ async function defineRecords() {
   } catch (error) {
     console.log(error);
   }
-  // }
+  }
   } catch (error) {
     console.log(error);
   }
 }
 
-// setInterval(defineRecords, 1000000);
+// setInterval(defineRecords, 10000);
