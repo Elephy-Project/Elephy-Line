@@ -220,61 +220,100 @@ fastify.post("/elephy-line", function (request, reply) {
 });
 
 async function defineRecords() {
+  // try {
+  // const records = await axios
+  //   .get(`${process.env.BASE_PATH}/elephant-records`)
+  //   .then((response) => {
+  //     return response.data;
+  //   });
+  // const now = new Date();
+  // now.setMinutes(now.getMinutes() - 50);
+  // const listRecord = records.filter(
+  //   (record) => new Date(record.datetime) >= now
+  // );
+  // console.log(listRecord.length, listRecord);
+  // const locationList = [
+  //   {
+  //     type: "text",
+  //     text: "Elephant detected",
+  //   },
+  // ];
+
+  // listRecord.map((record) => {
+  //   const temp = {
+  //     type: "location",
+  //     title: "Elephant location",
+  //     latitude: record.location_lat,
+  //     longitude: record.location_long,
+  //   };
+  //   locationList.push(temp);
+  // });
+  // console.log(locationList);
+  // if (listRecord.lenght > 0) {
+  // try {
+  //   const t = await axios.post(
+  //     "https://api.line.me/v2/bot/message/broadcast",
+  //     {
+  //       // replyToken: event.replyToken,
+  //       messages:
+  //       // locationList
+  //       [
+  //         {
+  //           type: "text",
+  //           text: "Elephant detected",
+  //         },
+  //         {
+  //           type: "location",
+  //           title: "my location",
+  //           // address: "1-6-1 Yotsuya, Shinjuku-ku, Tokyo, 160-0004, Japan",
+  //           latitude: 35.687574,
+  //           longitude: 139.72922,
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       headers: {
+  //         authorization: `Bearer ${channelToken}`,
+  //       },
+  //     }
+  //   );
+  //   console.log('t',t)
+  // } catch (error) {
+  //   console.log(error);
+  // }
+  // }
+  // } catch (error) {
+  //   console.log(error);
+  // }
+
   try {
-    const records = await axios
-      .get(`${process.env.BASE_PATH}/elephant-records`)
-      .then((response) => {
-        return response.data;
-      });
-    const now = new Date();
-    now.setMinutes(now.getMinutes() - 50);
-    const listRecord = records.filter(
-      (record) => new Date(record.datetime) >= now
-    );
-    console.log(listRecord.length, listRecord)
-    const locationList = []
-    
-    listRecord.map( (record) => {
-      const temp = {
-        type: "location",
-                title: "Elephant location",
-                latitude: record.location_lat,
-                longitude: record.location_long,
-      }
-    }
-      
-    )
-    
-    if (listRecord.lenght > 0) {
-      try {
-        axios.post(
-          "https://api.line.me/v2/bot/message/broadcast",
-          {
-            // replyToken: event.replyToken,
-            messages: [
-              {
-            "type":"text",
-            "text":"Elephant detected"
-        },
-              {
-                type: "location",
-                title: "my location",
-                address: "1-6-1 Yotsuya, Shinjuku-ku, Tokyo, 160-0004, Japan",
-                latitude: 35.687574,
-                longitude: 139.72922,
-              },
-            ],
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${channelToken}`,
+    const t = await axios.post(
+      "https://api.line.me/v2/bot/message/broadcast",
+      {
+        // replyToken: event.replyToken,
+        messages:
+          // locationList
+          [
+            {
+              type: "text",
+              text: "Elephant detected",
             },
-          }
-        );
-      } catch (error) {
-        console.log(error);
+            {
+              type: "location",
+              title: "my location",
+              // address: "1-6-1 Yotsuya, Shinjuku-ku, Tokyo, 160-0004, Japan",
+              latitude: 35.687574,
+              longitude: 139.72922,
+            },
+          ],
+      },
+      {
+        headers: {
+          authorization: `Bearer ${channelToken}`,
+        },
       }
-    }
+    );
+    console.log("t", t);
   } catch (error) {
     console.log(error);
   }
