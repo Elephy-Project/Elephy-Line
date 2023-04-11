@@ -6,7 +6,7 @@
 const path = require("path");
 const axios = require("axios");
 const channelToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
-const REPEAT = 20000
+const REPEAT = 20000;
 
 // Require the fastify framework and instantiate it
 const fastify = require("fastify")({
@@ -232,21 +232,22 @@ fastify.post("/elephy-line", function (request, reply) {
 async function defineRecords() {
   try {
     const records = await axios
-    .get(`${process.env.BASE_PATH}/elephant-records`)
-    .then((response) => {
-      return response.data;
-    });
-    const now = new Date()
-    console.log('before', now)
-    now.setMinutes(now.getMinutes() - 5)
-  // const listRecord = records.filter(record => 
-  //               Date(record.datetime) > now)
-  // console.log('listRecord', listRecord)
-    console.log(new Date(Date.parse("2023-04-11 09:25:17.754Z+00:00"))  now)
-    console.log(new Date("2023-04-11 09:28:17.754Z+00:00"), 'now', now)
-  }
-  catch (error) {
-    console.log(error)
+      .get(`${process.env.BASE_PATH}/elephant-records`)
+      .then((response) => {
+        return response.data;
+      });
+    const now = new Date();
+    console.log("before", now);
+    now.setMinutes(now.getMinutes() - 5);
+    const listRecord = records.filter(
+      (record) => {console.log(new Date(record.datetime)), new Date(record.datetime) >= now }
+      // >= now
+    );
+    console.log("listRecord", listRecord);
+    console.log('after',now);
+    // console.log(new Date("2023-04-11 09:28:17.754Z+00:00"), "now", now);
+  } catch (error) {
+    console.log(error);
   }
 }
 
