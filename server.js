@@ -231,7 +231,7 @@ async function defineRecords() {
     now.setMinutes(now.getMinutes() - 5);
     console.log('now', now)
     const listRecord = records.filter(
-      (record) => {new Date(record.datetime) <= now
+      (record) => new Date(record.datetime) >= now
     );
     let locationList = [
       {
@@ -252,8 +252,8 @@ async function defineRecords() {
         locationList.push(temp);
       }
     });
-    console.log(listRecord)
-    if (listRecord.lenght > 0) {
+    
+    if (listRecord.length < 5) {
       try {
         const t = await axios.post(
           "https://api.line.me/v2/bot/message/broadcast",
@@ -276,4 +276,4 @@ async function defineRecords() {
   }
 }
 
-setInterval(defineRecords, 10000);
+setInterval(defineRecords, 300000);
