@@ -231,40 +231,11 @@ async function defineRecords() {
     const listRecord = records.filter(
       (record) => new Date(record.datetime) >= now
     );
-    // console.log(listRecord.length, listRecord);
     let locationList = [
       {
         type: "text",
         text: "Elephant detected",
       },
-      // {
-      //   type: "location",
-      //   title: "Elephant location",
-      //   address: "Elephant address",
-      //   latitude: 13.912066,
-      //   longitude: 100.673074,
-      // },
-      // {
-      //   type: "location",
-      //   title: "Elephant location",
-      //   address: "Elephant address",
-      //   latitude: 13.912066,
-      //   longitude: 100.673074,
-      // },
-      // {
-      //   type: "location",
-      //   title: "Elephant location",
-      //   address: "Elephant address",
-      //   latitude: 13.912066,
-      //   longitude: 100.673074,
-      // },
-      // {
-      //   type: "location",
-      //   title: "Elephant location",
-      //   address: "Elephant address",
-      //   latitude: 13.912066,
-      //   longitude: 100.673074,
-      // }
     ];
 
     listRecord.map((record) => {
@@ -284,21 +255,7 @@ async function defineRecords() {
         const t = await axios.post(
           "https://api.line.me/v2/bot/message/broadcast",
           {
-            // replyToken: event.replyToken,
             messages: locationList,
-            // [
-            //   {
-            //     type: "text",
-            //     text: "Elephant detected",
-            //   },
-            //   {
-            //     type: "location",
-            //     title: "my location",
-            //     // address: "1-6-1 Yotsuya, Shinjuku-ku, Tokyo, 160-0004, Japan",
-            //     latitude: 35.687574,
-            //     longitude: 139.72922,
-            //   },
-            // ],
           },
           {
             headers: {
@@ -316,4 +273,4 @@ async function defineRecords() {
   }
 }
 
-// setInterval(defineRecords, 300000);
+setInterval(defineRecords, 300000);
