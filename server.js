@@ -226,10 +226,12 @@ async function defineRecords() {
       .then((response) => {
         return response.data;
       });
+    console.log(records)
     const now = new Date();
     now.setMinutes(now.getMinutes() - 5);
+    console.log('now', now)
     const listRecord = records.filter(
-      (record) => new Date(record.datetime) >= now
+      (record) => {new Date(record.datetime) <= now
     );
     let locationList = [
       {
