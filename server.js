@@ -227,7 +227,7 @@ async function defineRecords() {
         return response.data;
       });
     const now = new Date();
-    now.setMinutes(now.getMinutes() - 50);
+    now.setMinutes(now.getMinutes() - 5);
     const listRecord = records.filter(
       (record) => new Date(record.datetime) >= now
     );
