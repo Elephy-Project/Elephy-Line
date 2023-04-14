@@ -250,6 +250,7 @@ async function defineRecords() {
         locationList.push(temp);
       }
     });
+    console.log(listRecord)
     if (listRecord.lenght > 0) {
       try {
         const t = await axios.post(
@@ -273,4 +274,4 @@ async function defineRecords() {
   }
 }
 
-setInterval(defineRecords, 300000);
+setInterval(defineRecords, 10000);
