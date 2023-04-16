@@ -131,7 +131,7 @@ fastify.post("/elephy-line", function (request, reply) {
             informant: "Line user",
             location_lat: event.message.latitude,
             location_long: event.message.longitude,
-          })
+          }, { headers: { Authorization: `Bearer ${TOKEN}` } })
           .then((response) => {
             return response.status;
           });
@@ -166,7 +166,7 @@ fastify.post("/elephy-line", function (request, reply) {
           {
             replyToken: event.replyToken,
             messages: [
-              { type: "text", text: "https://elephy.vercel.app/summary" },
+              { type: "text", text: "https://elephy.vercel.app/history-mobile" },
             ],
           },
           {
@@ -220,18 +220,24 @@ fastify.post("/elephy-line", function (request, reply) {
 });
 
 async function login() {
+  const request = new FormData();
+  request.append('username', process.env.USERNAME )
+  request.append('password', process.env.PASSWORD )
   try {
     const response = await axios
-      .get(`${process.env.BASE_PATH}/token`, )
+      .get(`${process.env.BASE_PATH}/token`, request)
       .then((response) => {
         return response.data.access_token;
       });
+    console.log(response)
   } catch (error) {
     console.log(error);
   }
 }
 
-const TOKEN = login
+const TOKEN = login()
+
+console.log(TOKEN)
 
 async function defineRecords() {
   try {
@@ -296,4 +302,5 @@ async function defineRecords() {
 
 
 
-setInterval(defineRecords, 100000000000000);
+// setInterval(defineRecords, 100000000000000);
+// login
