@@ -229,10 +229,10 @@ async function defineRecords() {
     
     console.log(records[records.length-1])
     const now = new Date();
-    now.setMinutes(now.getMinutes() - 5);
+    var fiveMinAgo = now.setMinutes(now.getMinutes() - 5);
     console.log('now', now)
     const listRecord = records.filter(
-      (record) => new Date(record.datetime) >= now
+      (record) => new Date(record.datetime) >= fiveMinAgo
     );
     let locationList = [
       {
@@ -279,4 +279,4 @@ async function defineRecords() {
   }
 }
 
-setInterval(defineRecords, 100000000);
+setInterval(defineRecords, 300000);
