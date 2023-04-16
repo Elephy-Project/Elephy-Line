@@ -219,10 +219,24 @@ fastify.post("/elephy-line", function (request, reply) {
   return "Success";
 });
 
+async function login() {
+  try {
+    const response = await axios
+      .get(`${process.env.BASE_PATH}/token`, )
+      .then((response) => {
+        return response.data.access_token;
+      });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const TOKEN = login
+
 async function defineRecords() {
   try {
     const records = await axios
-      .get(`${process.env.BASE_PATH}/elephant-records`)
+      .get(`${process.env.BASE_PATH}/elephant-records`, { headers: { Authorization: `Bearer ${TOKEN}` } })
       .then((response) => {
         return response.data;
       });
@@ -280,4 +294,6 @@ async function defineRecords() {
   }
 }
 
-setInterval(defineRecords, 300000);
+
+
+setInterval(defineRecords, 100000000000000);
