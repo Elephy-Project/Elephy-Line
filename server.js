@@ -226,7 +226,8 @@ async function defineRecords() {
       .then((response) => {
         return response.data;
       });
-    console.log(records)
+    
+    console.log(records[records.length-1])
     const now = new Date();
     now.setMinutes(now.getMinutes() - 5);
     console.log('now', now)
@@ -253,6 +254,8 @@ async function defineRecords() {
       }
     });
     
+    console.log('listRecord', listRecord)
+    
     if (listRecord.length < 5) {
       try {
         const t = await axios.post(
@@ -266,7 +269,7 @@ async function defineRecords() {
             },
           }
         );
-        console.log("t", t);
+        // console.log("t", t);
       } catch (error) {
         console.log(error);
       }
@@ -276,4 +279,4 @@ async function defineRecords() {
   }
 }
 
-setInterval(defineRecords, 300000);
+setInterval(defineRecords, 100000000);
