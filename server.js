@@ -238,66 +238,68 @@ fastify.post("/elephy-line", async function (request, reply) {
 
 async function defineRecords() {
   try {
-    const records = await axios
-      .get(`${process.env.BASE_PATH}/elephant-records`, {
-        headers: { Authorization: `Bearer ${TOKEN}` },
-      })
-      .then((response) => {
-        return response.data;
+    const ttoken = await TOKEN.then(async (value) => {
+      const records = await axios
+        .get(`${process.env.BASE_PATH}/elephant-records`, {
+          headers: { Authorization: `Bearer ${value}` },
+        })
+        .then((response) => {
+          return response.data;
+        });
+
+      console.log(records[records.length - 1]);
+      const now = new Date();
+      var fiveMinAgo = new Date(now);
+      fiveMinAgo.setMinutes(now.getMinutes() - 7);
+      console.log("now", now, "fiveMinAgo", fiveMinAgo);
+      const listRecord = records.filter(
+        (record) => new Date(record.datetime) >= fiveMinAgo
+      );
+      let locationList = [
+        {
+          type: "text",
+          text: "Elephant detected",
+        },
+      ];
+
+      listRecord.map((record) => {
+        if (locationList.length < 5) {
+          const temp = {
+            type: "location",
+            title: "Elephant location",
+            address: "Elephant address",
+            latitude: record.location_lat,
+            longitude: record.location_long,
+          };
+          locationList.push(temp);
+        }
       });
 
-    console.log(records[records.length - 1]);
-    const now = new Date();
-    var fiveMinAgo = new Date(now);
-    fiveMinAgo.setMinutes(now.getMinutes() - 6);
-    console.log("now", now, "fiveMinAgo", fiveMinAgo);
-    const listRecord = records.filter(
-      (record) => new Date(record.datetime) >= fiveMinAgo
-    );
-    let locationList = [
-      {
-        type: "text",
-        text: "Elephant detected",
-      },
-    ];
+      console.log("listRecord", listRecord);
 
-    listRecord.map((record) => {
-      if (locationList.length < 5) {
-        const temp = {
-          type: "location",
-          title: "Elephant location",
-          address: "Elephant address",
-          latitude: record.location_lat,
-          longitude: record.location_long,
-        };
-        locationList.push(temp);
+      if (listRecord.length > 0) {
+        try {
+          const t = await axios.post(
+            "https://api.line.me/v2/bot/message/broadcast",
+            {
+              messages: locationList,
+            },
+            {
+              headers: {
+                authorization: `Bearer ${channelToken}`,
+              },
+            }
+          );
+          // console.log("t", t);
+        } catch (error) {
+          console.log(error);
+        }
       }
     });
-
-    console.log("listRecord", listRecord);
-
-    if (listRecord.length > 0) {
-      try {
-        const t = await axios.post(
-          "https://api.line.me/v2/bot/message/broadcast",
-          {
-            messages: locationList,
-          },
-          {
-            headers: {
-              authorization: `Bearer ${channelToken}`,
-            },
-          }
-        );
-        // console.log("t", t);
-      } catch (error) {
-        console.log(error);
-      }
-    }
   } catch (error) {
     console.log(error);
   }
 }
 
-// setInterval(defineRecords, 100000000000000);
+setInterval(defineRecords, 300000);
 // login
