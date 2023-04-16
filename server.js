@@ -230,7 +230,7 @@ async function defineRecords() {
     console.log(records[records.length-1])
     const now = new Date();
     var fiveMinAgo = now.setMinutes(now.getMinutes() - 5);
-    console.log('now', now)
+    console.log('now', now, 'fiveMinAgo', fiveMinAgo)
     const listRecord = records.filter(
       (record) => new Date(record.datetime) >= fiveMinAgo
     );
@@ -256,7 +256,7 @@ async function defineRecords() {
     
     console.log('listRecord', listRecord)
     
-    if (listRecord.length < 5) {
+    if (listRecord.length > 0) {
       try {
         const t = await axios.post(
           "https://api.line.me/v2/bot/message/broadcast",
