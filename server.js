@@ -122,18 +122,17 @@ fastify.listen(
   }
 );
 
- function login() {
+function login() {
   const request = new FormData();
   request.append("username", process.env.USERNAME);
   request.append("password", process.env.PASSWORD);
   try {
-    const response =  axios
+    const response = axios
       .post(`${process.env.BASE_PATH}/token`, request)
       .then((response) => {
         return response.data.access_token;
       });
-    console.log("response", response);
-    return response
+    return response;
   } catch (error) {
     console.log(error);
   }
@@ -141,47 +140,46 @@ fastify.listen(
 
 const TOKEN = login();
 
-console.log("TOKEN", TOKEN);
-
 // connect to line Elephy
-fastify.post("/elephy-line", function (request, reply) {
+fastify.post("/elephy-line", async function (request, reply) {
   for (const event of request.body.events) {
     if (event.type === "message" && event.message.type === "location") {
       try {
-        console.log('token in try', TOKEN)
-        const response = axios
-          .post(
-            `${process.env.BASE_PATH}/record`,
-            {
-              informant: "Line user",
-              location_lat: event.message.latitude,
-              location_long: event.message.longitude,
-            },
-            { headers: { Authorization: `Bearer ${TOKEN}` } }
-          )
-          .then((response) => {
-            return response.status;
-          });
-        if (response.status === 200) {
-          try {
-            const lineRes = axios.post(
-              "https://api.line.me/v2/bot/message/reply",
+        const ttoken = await TOKEN.then(async (value) => {
+          const response = await axios
+            .post(
+              `${process.env.BASE_PATH}/record`,
               {
-                replyToken: event.replyToken,
-                messages: [
-                  { type: "text", text: "Thank you for your report." },
-                ],
+                informant: "Line user",
+                location_lat: event.message.latitude,
+                location_long: event.message.longitude,
               },
-              {
-                headers: {
-                  authorization: `Bearer ${channelToken}`,
+              { headers: { Authorization: `Bearer ${value}` } }
+            )
+            .then((response) => {
+              return response.status;
+            });
+          if (response === 200) {
+            try {
+              const lineRes = axios.post(
+                "https://api.line.me/v2/bot/message/reply",
+                {
+                  replyToken: event.replyToken,
+                  messages: [
+                    { type: "text", text: "Thank you for your report." },
+                  ],
                 },
-              }
-            );
-          } catch (error) {
-            console.log(error);
+                {
+                  headers: {
+                    authorization: `Bearer ${channelToken}`,
+                  },
+                }
+              );
+            } catch (error) {
+              console.log(error);
+            }
           }
-        }
+        });
       } catch (error) {
         console.log(error);
       }
@@ -208,20 +206,6 @@ fastify.post("/elephy-line", function (request, reply) {
             },
           }
         );
-      } catch (error) {
-        console.log(error);
-      }
-    } else if (
-      event.type === "message" &&
-      event.message.type === "text" &&
-      event.message.text.toLowerCase() === "today records"
-    ) {
-      try {
-        const recordsResponse = axios
-          .get(`${process.env.BASE_PATH}/elephant-records`)
-          .then((response) => {
-            return response.data;
-          });
       } catch (error) {
         console.log(error);
       }
