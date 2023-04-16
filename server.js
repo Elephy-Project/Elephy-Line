@@ -7,6 +7,7 @@ const path = require("path");
 const axios = require("axios");
 const channelToken = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 const REPEAT = 20000;
+const FormData = require("form-data");
 
 // Require the fastify framework and instantiate it
 const fastify = require("fastify")({
@@ -121,37 +122,66 @@ fastify.listen(
   }
 );
 
+ function login() {
+  const request = new FormData();
+  request.append("username", process.env.USERNAME);
+  request.append("password", process.env.PASSWORD);
+  try {
+    const response =  axios
+      .post(`${process.env.BASE_PATH}/token`, request)
+      .then((response) => {
+        return response.data.access_token;
+      });
+    console.log("response", response);
+    return response
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const TOKEN = login();
+
+console.log("TOKEN", TOKEN);
+
 // connect to line Elephy
 fastify.post("/elephy-line", function (request, reply) {
   for (const event of request.body.events) {
     if (event.type === "message" && event.message.type === "location") {
       try {
+        console.log('token in try', TOKEN)
         const response = axios
-          .post(`${process.env.BASE_PATH}/record`, {
-            informant: "Line user",
-            location_lat: event.message.latitude,
-            location_long: event.message.longitude,
-          }, { headers: { Authorization: `Bearer ${TOKEN}` } })
+          .post(
+            `${process.env.BASE_PATH}/record`,
+            {
+              informant: "Line user",
+              location_lat: event.message.latitude,
+              location_long: event.message.longitude,
+            },
+            { headers: { Authorization: `Bearer ${TOKEN}` } }
+          )
           .then((response) => {
             return response.status;
           });
-      } catch (error) {
-        console.log(error);
-      }
-
-      try {
-        const lineRes = axios.post(
-          "https://api.line.me/v2/bot/message/reply",
-          {
-            replyToken: event.replyToken,
-            messages: [{ type: "text", text: "Thank you for your report." }],
-          },
-          {
-            headers: {
-              authorization: `Bearer ${channelToken}`,
-            },
+        if (response.status === 200) {
+          try {
+            const lineRes = axios.post(
+              "https://api.line.me/v2/bot/message/reply",
+              {
+                replyToken: event.replyToken,
+                messages: [
+                  { type: "text", text: "Thank you for your report." },
+                ],
+              },
+              {
+                headers: {
+                  authorization: `Bearer ${channelToken}`,
+                },
+              }
+            );
+          } catch (error) {
+            console.log(error);
           }
-        );
+        }
       } catch (error) {
         console.log(error);
       }
@@ -166,7 +196,10 @@ fastify.post("/elephy-line", function (request, reply) {
           {
             replyToken: event.replyToken,
             messages: [
-              { type: "text", text: "https://elephy.vercel.app/history-mobile" },
+              {
+                type: "text",
+                text: "https://elephy.vercel.app/history-mobile",
+              },
             ],
           },
           {
@@ -219,39 +252,21 @@ fastify.post("/elephy-line", function (request, reply) {
   return "Success";
 });
 
-async function login() {
-  const request = new FormData();
-  request.append('username', process.env.USERNAME )
-  request.append('password', process.env.PASSWORD )
-  try {
-    const response = await axios
-      .get(`${process.env.BASE_PATH}/token`, request)
-      .then((response) => {
-        return response.data.access_token;
-      });
-    console.log(response)
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-const TOKEN = login()
-
-console.log(TOKEN)
-
 async function defineRecords() {
   try {
     const records = await axios
-      .get(`${process.env.BASE_PATH}/elephant-records`, { headers: { Authorization: `Bearer ${TOKEN}` } })
+      .get(`${process.env.BASE_PATH}/elephant-records`, {
+        headers: { Authorization: `Bearer ${TOKEN}` },
+      })
       .then((response) => {
         return response.data;
       });
-    
-    console.log(records[records.length-1])
+
+    console.log(records[records.length - 1]);
     const now = new Date();
-    var fiveMinAgo = new Date(now) 
+    var fiveMinAgo = new Date(now);
     fiveMinAgo.setMinutes(now.getMinutes() - 6);
-    console.log('now', now, 'fiveMinAgo', fiveMinAgo)
+    console.log("now", now, "fiveMinAgo", fiveMinAgo);
     const listRecord = records.filter(
       (record) => new Date(record.datetime) >= fiveMinAgo
     );
@@ -274,9 +289,9 @@ async function defineRecords() {
         locationList.push(temp);
       }
     });
-    
-    console.log('listRecord', listRecord)
-    
+
+    console.log("listRecord", listRecord);
+
     if (listRecord.length > 0) {
       try {
         const t = await axios.post(
@@ -299,8 +314,6 @@ async function defineRecords() {
     console.log(error);
   }
 }
-
-
 
 // setInterval(defineRecords, 100000000000000);
 // login
