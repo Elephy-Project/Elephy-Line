@@ -218,7 +218,7 @@ fastify.post("/elephy-line", async function (request, reply) {
             messages: [
               {
                 type: "text",
-                text: `Please share location if you detect the elephants or clict the menu/type "History" to see the history`,
+                text: `Please share location if you detect the elephants or click the menu/type "History" to see the history`,
               },
             ],
           },
