@@ -250,7 +250,7 @@ async function defineRecords() {
       console.log(records[records.length - 1]);
       const now = new Date();
       var fiveMinAgo = new Date(now);
-      fiveMinAgo.setMinutes(now.getMinutes() - 6);
+      fiveMinAgo.setMinutes(now.getMinutes() - 10);
       console.log("now", now, "fiveMinAgo", fiveMinAgo);
       const listRecord = records.filter(
         (record) => new Date(record.datetime) >= fiveMinAgo
