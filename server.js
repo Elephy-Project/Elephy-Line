@@ -301,5 +301,5 @@ async function defineRecords() {
   }
 }
 
-setInterval(defineRecords, 300000);
+setInterval(defineRecords, 120000);
 // login
