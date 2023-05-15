@@ -1,7 +1,8 @@
 # This is Elephy Line server
 
-This is the code of the line chat bot server part. You can visited us via our line official
+This is the code for the Line chat bot server, created from the node.js template in [Glitsh](https://glitch.com/). 
 
+You can visit our website [ELEPHY](https://elephy.vercel.app/) or join us via our Line official by scanning the QR-code below.
 
 ![line qr](https://drive.google.com/u/0/uc?id=1f4MOwk17dIX2AclUfBeA7hd3HZL5vg2y)
 
